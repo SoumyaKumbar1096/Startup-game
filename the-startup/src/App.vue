@@ -1,26 +1,53 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="game">
+    <Overview/>
+    <Upgrades/>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Overview from './components/Overview.vue';
+import Upgrades from './components/Upgrades.vue';
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
-    HelloWorld
+    Overview,
+    Upgrades
+  },
+  methods: {
+    coding() {
+      this.$store.commit('incrementBytes', this.$store.state.bpk)
+    },
+    loop () {
+      // GAME LOOP
+      this.levelManager();
+      requestAnimationFrame(this.loop)
+    },
+    levelManager () {
+      if (this.$store.getters.bytesUntilLevelUp <= 0){
+        this.$store.commit('levelUp');
+      }
+    }
+  },
+  created () {
+    this.loop();
+    document.addEventListener('keydown', this.coding);
+  },
+  unmounted () {
+    document.addEventListener('keydown', this.coding);
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'montserrat', sans-serif;
+  }
 </style>
